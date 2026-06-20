@@ -48,7 +48,7 @@ export function PatientsScreen({
         </div>
 
         <p className="mt-1.5 text-sm leading-relaxed text-primary-foreground/85">
-          Escolha um paciente para iniciar o atendimento.
+          Pacientes cadastrados na triagem e prontos para atendimento.
         </p>
 
         <div className="mt-4 flex items-center gap-2 rounded-2xl bg-primary-foreground/15 px-4 py-3">
@@ -79,11 +79,11 @@ export function PatientsScreen({
 
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-semibold text-foreground">
-              Novo paciente
+              Nova triagem
             </span>
 
             <span className="block text-xs text-muted-foreground">
-              Cadastrar perfil e sensibilidades
+              Cadastrar um paciente pela triagem
             </span>
           </span>
 

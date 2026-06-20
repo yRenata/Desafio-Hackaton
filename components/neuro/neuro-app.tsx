@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { BottomNav } from "./bottom-nav";
-import { HomeScreen } from "./screens/home-screen";
 import { PatientsScreen } from "./screens/patients-screen";
 import { ProfileScreen } from "./screens/profile-screen";
+import { TriageScreen } from "./screens/triage-screen";
+import { AttendanceScreen } from "./screens/attendance-screen";
 import { ProceduresScreen } from "./screens/procedures-screen";
 import { CareScreen } from "./screens/care-screen";
 import { HistoryScreen } from "./screens/history-screen";
@@ -19,19 +20,21 @@ import {
 } from "./data";
 
 const viewToTab: Record<View, TabId> = {
-  inicio: "inicio",
   lista: "pacientes",
   perfil: "pacientes",
+  triagem: "triagem",
+  atendimento: "atendimento",
   procedimento: "atendimento",
   orientacoes: "atendimento",
-  historico: "historico",
+  historico: "atendimento",
 };
 
 export function NeuroApp() {
-  const [view, setView] = useState<View>("inicio");
+  const [view, setView] = useState<View>("triagem");
   const [pacientes, setPacientes] = useState<Paciente[]>(pacientesMock);
   const [draft, setDraft] = useState<Paciente | null>(null);
   const [isNovo, setIsNovo] = useState(false);
+  const [perfilOrigem, setPerfilOrigem] = useState<"triagem" | "pacientes">("pacientes");
   const [ativo, setAtivo] = useState<Paciente | null>(null);
   const [procedimento, setProcedimento] = useState<Procedure | null>(null);
   const [historico, setHistorico] = useState<RegistroHistorico[]>([]);
@@ -41,18 +44,13 @@ export function NeuroApp() {
   };
 
   const handleTab = (tab: TabId) => {
-    if (tab === "inicio") {
-      setView("inicio");
-      return;
-    }
-
     if (tab === "pacientes") {
       setView("lista");
       return;
     }
 
-    if (tab === "historico") {
-      setView("historico");
+    if (tab === "triagem") {
+      setView("triagem");
       return;
     }
 
@@ -60,22 +58,24 @@ export function NeuroApp() {
       if (ativo && procedimento) {
         setView("orientacoes");
       } else if (ativo) {
-        setView("procedimento");
+        setView("atendimento");
       } else {
         setView("lista");
       }
     }
   };
 
-  const handleNovo = () => {
+  const handleNovaTriagem = () => {
     setDraft(novoPaciente());
     setIsNovo(true);
+    setPerfilOrigem("triagem");
     setView("perfil");
   };
 
   const handleEditar = (p: Paciente) => {
     setDraft({ ...p });
     setIsNovo(false);
+    setPerfilOrigem("pacientes");
     setView("perfil");
   };
 
@@ -95,9 +95,14 @@ export function NeuroApp() {
     setView("lista");
   };
 
-  const handleIniciar = (p: Paciente) => {
+  const handleIniciarAtendimento = (p: Paciente) => {
     setAtivo(p);
     setProcedimento(null);
+    setView("atendimento");
+  };
+
+  const handleDefinirProcedimento = () => {
+    if (!ativo) return;
     setView("procedimento");
   };
 
@@ -112,7 +117,7 @@ export function NeuroApp() {
     const registro: RegistroHistorico = {
       id: `h-${Date.now()}`,
       pacienteNome: ativo.nome,
-      pacienteResumo: `${ativo.idade} anos · ${ativo.condicao}`,
+      pacienteResumo: `${ativo.idade} · ${ativo.condicao}`,
       procedimentoNome: procedimento.nome,
       data: new Date().toLocaleDateString("pt-BR", {
         day: "2-digit",
@@ -128,7 +133,7 @@ export function NeuroApp() {
     setProcedimento(null);
 
     if (ativo) {
-      setView("procedimento");
+      setView("atendimento");
     } else {
       setView("lista");
     }
@@ -137,14 +142,12 @@ export function NeuroApp() {
   return (
     <main className="mx-auto flex min-h-svh w-full flex-col bg-background">
       <div className="flex-1">
-        {view === "inicio" && <HomeScreen onStart={() => setView("lista")} />}
-
         {view === "lista" && (
           <PatientsScreen
             pacientes={pacientes}
-            onNovo={handleNovo}
+            onNovo={() => setView("triagem")}
             onEditar={handleEditar}
-            onIniciar={handleIniciar}
+            onIniciar={handleIniciarAtendimento}
           />
         )}
 
@@ -153,8 +156,18 @@ export function NeuroApp() {
             paciente={draft}
             novo={isNovo}
             onChange={updateDraft}
-            onBack={() => setView("lista")}
+            onBack={() => setView(perfilOrigem === "triagem" ? "triagem" : "lista")}
             onSalvar={handleSalvarPaciente}
+          />
+        )}
+
+        {view === "triagem" && <TriageScreen onCadastrar={handleNovaTriagem} />}
+
+        {view === "atendimento" && ativo && (
+          <AttendanceScreen
+            paciente={ativo}
+            onBack={() => setView("lista")}
+            onProcedimento={handleDefinirProcedimento}
           />
         )}
 
@@ -163,7 +176,7 @@ export function NeuroApp() {
             paciente={ativo}
             selecionado={procedimento}
             onSelect={setProcedimento}
-            onBack={() => setView("lista")}
+            onBack={() => setView("atendimento")}
             onGerar={handleGerarOrientacoes}
           />
         )}
@@ -182,7 +195,10 @@ export function NeuroApp() {
         {view === "historico" && <HistoryScreen registros={historico} />}
       </div>
 
-      <BottomNav active={viewToTab[view]} onChange={handleTab} />
+      <BottomNav
+        active={view === "perfil" && perfilOrigem === "triagem" ? "triagem" : viewToTab[view]}
+        onChange={handleTab}
+      />
     </main>
   );
 }

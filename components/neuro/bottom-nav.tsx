@@ -1,14 +1,13 @@
 "use client"
 
-import { Home, Users, HeartHandshake, History } from "lucide-react"
+import { ClipboardList, HeartHandshake, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { TabId } from "./data"
 
-const tabs: { id: TabId; label: string; icon: typeof Home }[] = [
-  { id: "inicio", label: "Início", icon: Home },
+const tabs: { id: TabId; label: string; icon: typeof ClipboardList }[] = [
+  { id: "triagem", label: "Triagem", icon: ClipboardList },
   { id: "pacientes", label: "Pacientes", icon: Users },
   { id: "atendimento", label: "Atendimento", icon: HeartHandshake },
-  { id: "historico", label: "Histórico", icon: History },
 ]
 
 export function BottomNav({

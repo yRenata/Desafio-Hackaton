@@ -26,7 +26,7 @@ export function AppHeader({
             <Brain className="h-5 w-5" strokeWidth={2} />
           </span>
         )}
-        <span className="text-sm font-semibold tracking-tight">NeuroAcolhe</span>
+        <span className="text-sm font-semibold tracking-tight">Brilhantes</span>
       </div>
       <h1 className="mt-4 text-2xl font-semibold leading-tight text-balance">{title}</h1>
       {subtitle ? (

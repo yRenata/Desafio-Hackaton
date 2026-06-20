@@ -45,7 +45,7 @@ export function CareScreen({
     return (
       <div>
         <AppHeader
-          title="Como será o atendimento"
+          title="Como conduzir o atendimento"
           subtitle="Orientações personalizadas com base no perfil do paciente e no procedimento selecionado."
         />
         <div className="px-5 py-10">
@@ -55,7 +55,7 @@ export function CareScreen({
             </span>
             <p className="text-sm font-semibold text-foreground">Nenhum atendimento em andamento</p>
             <p className="mt-1 text-xs text-muted-foreground text-pretty">
-              Escolha um paciente na lista e selecione um procedimento para gerar as orientações.
+              Escolha um paciente em Pacientes e selecione um procedimento para gerar as orientações.
             </p>
             <button
               type="button"
@@ -75,7 +75,7 @@ export function CareScreen({
   return (
     <div>
       <AppHeader
-        title="Como será o atendimento"
+        title="Como conduzir o atendimento"
         subtitle="Orientações personalizadas com base no perfil do paciente e no procedimento selecionado."
         onBack={onBack}
       />
@@ -121,7 +121,7 @@ export function CareScreen({
 
         {/* Orientações */}
         <section>
-          <h2 className="mb-3 px-1 text-sm font-semibold text-foreground">Orientações do atendimento</h2>
+          <h2 className="mb-3 px-1 text-sm font-semibold text-foreground">Orientações para a equipe</h2>
           <ul className="space-y-3">
             {orientacoes.map((o, i) => {
               const Icon = categoriaIcon[o.categoria]

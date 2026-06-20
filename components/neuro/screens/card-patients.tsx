@@ -4,7 +4,7 @@ import { Lightbulb, Pencil, Sparkles } from "lucide-react";
 interface Patient {
   id: string;
   nome: string;
-  idade: number;
+  idade: string;
   condicao: string;
   sensibilidades: string[];
   estrategia: string;
@@ -34,7 +34,7 @@ export function CardPatientsScreen({
           </p>
 
           <p className="text-xs text-muted-foreground">
-            {p.idade} anos · {p.condicao}
+            {p.idade} · {p.condicao}
           </p>
         </div>
 

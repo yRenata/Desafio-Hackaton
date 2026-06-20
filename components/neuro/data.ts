@@ -2,20 +2,19 @@ import {
   Syringe,
   Droplet,
   Stethoscope,
-  Activity,
   ClipboardCheck,
   Bandage,
-  Armchair,
   Waves,
   type LucideIcon,
 } from "lucide-react"
 
-export type TabId = "inicio" | "pacientes" | "atendimento" | "historico"
+export type TabId = "triagem" | "pacientes" | "atendimento"
 
 export type View =
-  | "inicio"
   | "lista"
   | "perfil"
+  | "triagem"
+  | "atendimento"
   | "procedimento"
   | "orientacoes"
   | "historico"
@@ -51,13 +50,6 @@ export const procedimentos: Procedure[] = [
     icon: Stethoscope,
   },
   {
-    id: "triagem",
-    nome: "Triagem",
-    descricao: "Sinais vitais e classificação de risco",
-    duracao: "~10 min",
-    icon: ClipboardCheck,
-  },
-  {
     id: "curativo",
     nome: "Curativo",
     descricao: "Limpeza e cuidado de feridas",
@@ -65,11 +57,18 @@ export const procedimentos: Procedure[] = [
     icon: Bandage,
   },
   {
-    id: "espera",
-    nome: "Espera / recepção",
-    descricao: "Acolhimento na sala de espera",
-    duracao: "Variável",
-    icon: Armchair,
+    id: "vacina",
+    nome: "Administração de vacina",
+    descricao: "Imunização com preparo sensorial e comunicação antecipada",
+    duracao: "~10 min",
+    icon: Syringe,
+  },
+  {
+    id: "avaliacao",
+    nome: "Avaliação clínica",
+    descricao: "Escuta, observação e decisão de conduta pelo profissional",
+    duracao: "~20 min",
+    icon: ClipboardCheck,
   },
   {
     id: "desregulacao",
