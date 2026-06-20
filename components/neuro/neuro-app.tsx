@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { BottomNav } from "./bottom-nav"
-import { HomeScreen } from "./screens/home-screen"
-import { PatientsScreen } from "./screens/patients-screen"
-import { ProfileScreen } from "./screens/profile-screen"
-import { ProceduresScreen } from "./screens/procedures-screen"
-import { CareScreen } from "./screens/care-screen"
-import { HistoryScreen } from "./screens/history-screen"
+import { useState } from "react";
+import { BottomNav } from "./bottom-nav";
+import { HomeScreen } from "./screens/home-screen";
+import { PatientsScreen } from "./screens/patients-screen";
+import { ProfileScreen } from "./screens/profile-screen";
+import { ProceduresScreen } from "./screens/procedures-screen";
+import { CareScreen } from "./screens/care-screen";
+import { HistoryScreen } from "./screens/history-screen";
 import {
   pacientesMock,
   novoPaciente,
@@ -16,7 +16,7 @@ import {
   type RegistroHistorico,
   type TabId,
   type View,
-} from "./data"
+} from "./data";
 
 const viewToTab: Record<View, TabId> = {
   inicio: "inicio",
@@ -25,74 +25,117 @@ const viewToTab: Record<View, TabId> = {
   procedimento: "atendimento",
   orientacoes: "atendimento",
   historico: "historico",
-}
+};
 
 export function NeuroApp() {
-  const [view, setView] = useState<View>("inicio")
-  const [pacientes, setPacientes] = useState<Paciente[]>(pacientesMock)
-  const [draft, setDraft] = useState<Paciente | null>(null)
-  const [isNovo, setIsNovo] = useState(false)
-  const [ativo, setAtivo] = useState<Paciente | null>(null)
-  const [procedimento, setProcedimento] = useState<Procedure | null>(null)
-  const [historico, setHistorico] = useState<RegistroHistorico[]>([])
+  const [view, setView] = useState<View>("inicio");
+  const [pacientes, setPacientes] = useState<Paciente[]>(pacientesMock);
+  const [draft, setDraft] = useState<Paciente | null>(null);
+  const [isNovo, setIsNovo] = useState(false);
+  const [ativo, setAtivo] = useState<Paciente | null>(null);
+  const [procedimento, setProcedimento] = useState<Procedure | null>(null);
+  const [historico, setHistorico] = useState<RegistroHistorico[]>([]);
 
-  const updateDraft = (patch: Partial<Paciente>) =>
-    setDraft((prev) => (prev ? { ...prev, ...patch } : prev))
+  const updateDraft = (patch: Partial<Paciente>) => {
+    setDraft((prev) => (prev ? { ...prev, ...patch } : prev));
+  };
 
   const handleTab = (tab: TabId) => {
-    if (tab === "inicio") setView("inicio")
-    else if (tab === "pacientes") setView("lista")
-    else if (tab === "historico") setView("historico")
-    else if (tab === "atendimento") {
-      // Volta ao atendimento em andamento, se houver
-      if (ativo && procedimento) setView("orientacoes")
-      else if (ativo) setView("procedimento")
-      else setView("lista")
+    if (tab === "inicio") {
+      setView("inicio");
+      return;
     }
-  }
+
+    if (tab === "pacientes") {
+      setView("lista");
+      return;
+    }
+
+    if (tab === "historico") {
+      setView("historico");
+      return;
+    }
+
+    if (tab === "atendimento") {
+      if (ativo && procedimento) {
+        setView("orientacoes");
+      } else if (ativo) {
+        setView("procedimento");
+      } else {
+        setView("lista");
+      }
+    }
+  };
 
   const handleNovo = () => {
-    setDraft(novoPaciente())
-    setIsNovo(true)
-    setView("perfil")
-  }
+    setDraft(novoPaciente());
+    setIsNovo(true);
+    setView("perfil");
+  };
 
   const handleEditar = (p: Paciente) => {
-    setDraft({ ...p })
-    setIsNovo(false)
-    setView("perfil")
-  }
+    setDraft({ ...p });
+    setIsNovo(false);
+    setView("perfil");
+  };
 
   const handleSalvarPaciente = () => {
-    if (!draft) return
+    if (!draft) return;
+
     setPacientes((prev) => {
-      const existe = prev.some((p) => p.id === draft.id)
-      return existe ? prev.map((p) => (p.id === draft.id ? draft : p)) : [...prev, draft]
-    })
-    setView("lista")
-  }
+      const existe = prev.some((p) => p.id === draft.id);
+
+      if (existe) {
+        return prev.map((p) => (p.id === draft.id ? draft : p));
+      }
+
+      return [...prev, draft];
+    });
+
+    setView("lista");
+  };
 
   const handleIniciar = (p: Paciente) => {
-    setAtivo(p)
-    setProcedimento(null)
-    setView("procedimento")
-  }
+    setAtivo(p);
+    setProcedimento(null);
+    setView("procedimento");
+  };
+
+  const handleGerarOrientacoes = () => {
+    if (!ativo || !procedimento) return;
+    setView("orientacoes");
+  };
 
   const handleSalvarOrientacao = () => {
-    if (!ativo || !procedimento) return
+    if (!ativo || !procedimento) return;
+
     const registro: RegistroHistorico = {
       id: `h-${Date.now()}`,
       pacienteNome: ativo.nome,
-      pacienteResumo: `${ativo.idade} · ${ativo.condicao}`,
+      pacienteResumo: `${ativo.idade} anos · ${ativo.condicao}`,
       procedimentoNome: procedimento.nome,
-      data: new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
+      data: new Date().toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "short",
+      }),
+    };
+
+    setHistorico((prev) => [registro, ...prev]);
+    setView("historico");
+  };
+
+  const handleNovoAtendimento = () => {
+    setProcedimento(null);
+
+    if (ativo) {
+      setView("procedimento");
+    } else {
+      setView("lista");
     }
-    setHistorico((prev) => [registro, ...prev])
-    setView("historico")
-  }
+  };
 
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-md flex-col bg-background">
+    <main className="mx-auto flex min-h-svh w-full flex-col bg-background">
       <div className="flex-1">
         {view === "inicio" && <HomeScreen onStart={() => setView("lista")} />}
 
@@ -121,27 +164,25 @@ export function NeuroApp() {
             selecionado={procedimento}
             onSelect={setProcedimento}
             onBack={() => setView("lista")}
-            onGerar={() => setView("orientacoes")}
+            onGerar={handleGerarOrientacoes}
           />
         )}
 
-        {view === "orientacoes" && (
+        {view === "orientacoes" && ativo && procedimento && (
           <CareScreen
             paciente={ativo}
             procedimento={procedimento}
             onBack={() => setView("procedimento")}
             onSalvar={handleSalvarOrientacao}
-            onNovoAtendimento={() => {
-              setProcedimento(null)
-              setView("procedimento")
-            }}
+            onNovoAtendimento={handleNovoAtendimento}
             onVoltarPacientes={() => setView("lista")}
           />
         )}
 
         {view === "historico" && <HistoryScreen registros={historico} />}
       </div>
+
       <BottomNav active={viewToTab[view]} onChange={handleTab} />
     </main>
-  )
+  );
 }
