@@ -43,7 +43,7 @@ export function PatientsScreen({
           </span>
 
           <span className="text-sm font-semibold tracking-tight">
-            NeuroAcolhe
+            Brilhantes
           </span>
         </div>
 
@@ -67,28 +67,6 @@ export function PatientsScreen({
         <h2 className="px-1 text-sm font-semibold text-foreground">
           Pacientes cadastrados
         </h2>
-
-        <button
-          type="button"
-          onClick={onNovo}
-          className="flex w-full items-center gap-3 rounded-3xl border border-dashed border-primary/40 bg-card p-4 text-left transition-colors hover:bg-accent"
-        >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-primary">
-            <Plus className="h-5 w-5" strokeWidth={2} />
-          </span>
-
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-semibold text-foreground">
-              Nova triagem
-            </span>
-
-            <span className="block text-xs text-muted-foreground">
-              Cadastrar um paciente pela triagem
-            </span>
-          </span>
-
-          <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
-        </button>
 
         {filtrados.length > 0 ? (
           <ul className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-stretch">
